@@ -27,6 +27,32 @@
                 .then(data => alert(data.message));
         }
 
+        <canvas id="tradingChart"></canvas>
+
+
+    function updateChart() {
+        fetch("/get_trading_data")
+            .then(response => response.json())
+            .then(data => {
+                let ctx = document.getElementById("tradingChart").getContext("2d");
+                new Chart(ctx, {
+                    type: "line",
+                    data: {
+                        labels: data.timestamps,
+                        datasets: [{
+                            label: "Kurs BTC",
+                            data: data.prices,
+                            borderColor: "green",
+                            fill: false
+                        }]
+                    }
+                });
+            });
+    }
+
+    setInterval(updateChart, 5000);
+
+
         function updateChart() {
             fetch("/get_trading_data")
                 .then(response => response.json())
