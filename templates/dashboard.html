@@ -6,7 +6,7 @@
     <title>RLdC Trading Bot - Panel WWW</title>
 </head>
 <body>
-    <h1>RLdC Trading Bot - Zaawansowany Panel</h1>
+    <h1>🚀 RLdC Trading Bot - Profesjonalny Panel</h1>
 
     <h2>🔧 Ustawienia AI i Strategii</h2>
     <label>Tryb AI:</label>
@@ -32,13 +32,18 @@
 
     <button onclick="updateConfig()">💾 Zapisz ustawienia</button>
 
-    <h2>📊 Historia Transakcji</h2>
+    <h2>📊 Stan Bota</h2>
+    <button onclick="startBot()">🚀 Uruchom Bota</button>
+    <button onclick="stopBot()">🛑 Zatrzymaj Bota</button>
+    <p id="bot_status">⌛ Sprawdzanie statusu...</p>
+
+    <h2>📈 Podgląd Rynku</h2>
+    <button onclick="getMarketData()">🌍 Pobierz Ceny</button>
+    <ul id="market_data"></ul>
+
+    <h2>📜 Logi</h2>
     <button onclick="getLogs()">📜 Pobierz logi</button>
     <pre id="logs"></pre>
-
-    <h2>📈 Wykres Handlu</h2>
-    <button onclick="updateChart()">📊 Generuj wykres</button><br>
-    <img id="trading_chart" src="" alt="Wykres handlu" width="600px">
 
     <h2>🔗 Ustawienia API</h2>
     <label>Binance API Key:</label>
@@ -60,12 +65,7 @@
             fetch("/update_config", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ 
-                    "AI_MODE": ai_mode, 
-                    "STRATEGY": strategy, 
-                    "STOP_LOSS": stop_loss, 
-                    "TAKE_PROFIT": take_profit 
-                })
+                body: JSON.stringify({ "AI_MODE": ai_mode, "STRATEGY": strategy, "STOP_LOSS": stop_loss, "TAKE_PROFIT": take_profit })
             })
             .then(response => response.json())
             .then(data => alert(data.message));
@@ -79,14 +79,28 @@
             fetch("/update_api", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ 
-                    "BINANCE_API_KEY": binance_api_key,
-                    "BINANCE_API_SECRET": binance_secret_key,
-                    "TELEGRAM_BOT_TOKEN": telegram_token
-                })
+                body: JSON.stringify({ "BINANCE_API_KEY": binance_api_key, "BINANCE_API_SECRET": binance_secret_key, "TELEGRAM_BOT_TOKEN": telegram_token })
             })
             .then(response => response.json())
             .then(data => alert(data.message));
+        }
+
+        function startBot() {
+            fetch("/start_bot", { method: "POST" })
+                .then(response => response.json())
+                .then(data => alert(data.message));
+        }
+
+        function stopBot() {
+            fetch("/stop_bot", { method: "POST" })
+                .then(response => response.json())
+                .then(data => alert(data.message));
+        }
+
+        function getBotStatus() {
+            fetch("/bot_status")
+                .then(response => response.json())
+                .then(data => document.getElementById("bot_status").innerText = data.status);
         }
 
         function getLogs() {
@@ -97,17 +111,22 @@
             });
         }
 
-        function updateChart() {
-            fetch("/plot_trading_chart")
+        function getMarketData() {
+            fetch("/market_analysis")
             .then(response => response.json())
             .then(data => {
-                if (!data.error) {
-                    document.getElementById("trading_chart").src = "/static/trading_chart.png";
-                } else {
-                    alert(data.error);
-                }
+                let marketList = document.getElementById("market_data");
+                marketList.innerHTML = "";
+                data.slice(0, 10).forEach(item => {
+                    let listItem = document.createElement("li");
+                    listItem.innerText = `${item.symbol}: ${item.price} USDT`;
+                    marketList.appendChild(listItem);
+                });
             });
         }
+
+        getBotStatus();
+        setInterval(getBotStatus, 10000);  // Aktualizacja statusu co 10s
     </script>
 </body>
 </html>
