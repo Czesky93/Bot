@@ -66,6 +66,18 @@ def get_logs():
         return jsonify({"status": "success", "logs": logs})
     return jsonify({"status": "error", "logs": ["⚠️ Brak logów!"]})
 
+@app.route("/bot_status", methods=["GET"])
+def bot_status():
+    return jsonify({"status": "✅ RLdC Trading Bot działa!"})
+
+@app.route("/start_telegram_bot", methods=["POST"])
+def start_telegram_bot():
+    try:
+        subprocess.Popen(["python3", "telegram_ai_bot.py"])
+        return jsonify({"status": "success", "message": "📩 Telegram AI Bot uruchomiony!"})
+    except Exception as e:
+        return jsonify({"status": "error", "message": f"❌ Błąd uruchamiania Telegrama: {str(e)}"})
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
