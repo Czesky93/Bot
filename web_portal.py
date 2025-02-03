@@ -88,8 +88,6 @@ def get_logs():
         return jsonify({"status": "success", "logs": logs})
     return jsonify({"status": "error", "logs": ["⚠️ Brak logów!"]})
 
-@app.route("/bot_status", methods=["GET"])
-def bot_status():
     return jsonify({"status": "✅ RLdC Trading Bot działa!"})
 
 @app.route("/start_telegram_bot", methods=["POST"])
