@@ -32,3 +32,11 @@ def update_ai():
     with open("ai_config.json", "w") as file:
         json.dump(ai_settings, file, indent=4)
     return jsonify({"status": "success", "message": "Ustawienia AI zapisane!"})
+@app.route("/get_trading_data", methods=["GET"])
+def get_trading_data():
+    # Symulacja danych handlowych
+    trading_data = {
+        "timestamps": ["08:00", "08:10", "08:20", "08:30"],
+        "prices": [43200, 43350, 43100, 43500]
+    }
+    return jsonify(trading_data)
