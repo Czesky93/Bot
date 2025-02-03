@@ -2,14 +2,22 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>RLdC Trading Bot - Dashboard</title>
+    <title>RLdC Trading Exchange</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <h1>RLdC Trading Bot</h1>
-    <h2>Saldo: <span id="balance">Ładowanie...</span> USDT</h2>
+    <h1>RLdC Binance Exchange</h1>
+
+    <h2>Wybierz Parę:</h2>
+    <select id="pairSelect">
+        <option value="BTCUSDT">BTC/USDT</option>
+        <option value="ETHUSDT">ETH/USDT</option>
+    </select>
 
     <canvas id="tradingChart"></canvas>
+
+    <h2>📈 AI Market Insights</h2>
+    <p id="market_insights">Analizowanie rynku...</p>
 
     <button onclick="startBot()">Start</button>
     <button onclick="stopBot()">Stop</button>
@@ -27,18 +35,29 @@
                 .then(data => alert(data.message));
         }
 
-        function updateChart() {
-            fetch("/get_trading_data")
+        function updateMarketInsights() {
+            fetch("/market_analysis")
                 .then(response => response.json())
                 .then(data => {
+                    let btcPrice = data.find(x => x.symbol === "BTCUSDT").price;
+                    document.getElementById("market_insights").innerText = 
+                        "📊 BTC/USDT: $" + btcPrice;
+                });
+        }
+
+        function updateChart() {
+            fetch("/market_analysis")
+                .then(response => response.json())
+                .then(data => {
+                    let btcPrice = data.find(x => x.symbol === "BTCUSDT").price;
                     let ctx = document.getElementById("tradingChart").getContext("2d");
                     new Chart(ctx, {
                         type: "line",
                         data: {
-                            labels: data.timestamps,
+                            labels: ["1 min", "5 min", "10 min"],
                             datasets: [{
-                                label: "Kurs BTC",
-                                data: data.prices,
+                                label: "BTC/USDT",
+                                data: [btcPrice, btcPrice * 1.01, btcPrice * 0.99],
                                 borderColor: "green",
                                 fill: false
                             }]
@@ -48,6 +67,7 @@
         }
 
         setInterval(updateChart, 5000);
+        setInterval(updateMarketInsights, 10000);
     </script>
 </body>
 </html>
