@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RLdC Manager</title>
+</head>
+<body>
+    <h1>RLdC Trading Bot - Panel Zarządzania</h1>
+    <button onclick="sendRequest('/install')">🔧 Instalacja</button>
+    <button onclick="sendRequest('/update')">🔄 Aktualizacja</button>
+    <button onclick="sendRequest('/repair')">⚙️ Naprawa</button>
+    <button onclick="sendRequest('/restart')">♻️ Restart</button>
+
+    <script>
+        function sendRequest(endpoint) {
+            fetch(endpoint, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => alert(data.message))
+                .catch(error => alert('Błąd: ' + error));
+        }
+    </script>
+</body>
+</html>

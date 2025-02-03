@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RLdC Futuristic Portal</title>
+    <style>
+        body {
+            background-color: #0e0e0e;
+            color: cyan;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        h1 {
+            font-size: 2.5em;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            background-color: cyan;
+            border: none;
+            color: black;
+            cursor: pointer;
+        }
+        pre {
+            text-align: left;
+            background: black;
+            padding: 15px;
+            border-radius: 5px;
+            color: lime;
+            overflow: auto;
+            max-height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <h1>RLdC Futuristic Portal</h1>
+    <h2>Zaawansowane Sterowanie AI Trading Bot</h2>
+
+    <label>Tryb AI:</label>
+    <select id="ai_mode">
+        <option value="free">Darmowa</option>
+        <option value="paid">Płatna</option>
+        <option value="hybrid" selected>Hybrydowa</option>
+    </select><br>
+
+    <label>Stop-Loss:</label>
+    <input type="number" id="stop_loss" value="0.02" step="0.01"><br>
+
+    <label>Take-Profit:</label>
+    <input type="number" id="take_profit" value="0.05" step="0.01"><br>
+
+    <button onclick="updateConfig()">Zapisz ustawienia</button>
+
+    <h2>Wykres strategii handlowych</h2>
+    <button onclick="updateChart()">Generuj wykres</button><br>
+    <img id="trading_chart" src="" alt="Wykres handlu" width="800px">
+
+    <script>
+        function updateConfig() {
+            const ai_mode = document.getElementById("ai_mode").value;
+            const stop_loss = parseFloat(document.getElementById("stop_loss").value);
+            const take_profit = parseFloat(document.getElementById("take_profit").value);
+
+            fetch("/update_config", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ "AI_MODE": ai_mode, "STOP_LOSS": stop_loss, "TAKE_PROFIT": take_profit })
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message));
+        }
+
+        function updateChart() {
+            fetch("/get_trading_chart")
+            .then(response => response.json())
+            .then(data => {
+                if (!data.error) {
+                    document.getElementById("trading_chart").src = "/static/futuristic_trading_chart.png";
+                } else {
+                    alert(data.error);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RLdC ULTIMATE AI</title>
+    <style>
+        body {
+            background-color: black;
+            color: lime;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            font-size: 2.5em;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            background-color: lime;
+            border: none;
+            color: black;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>RLdC ULTIMATE AI</h1>
+    <h2>Przewidywanie przyszłości rynków</h2>
+    <button onclick="getPrediction()">Uzyskaj Prognozę AI</button>
+    <h3 id="prediction"></h3>
+
+    <script>
+        function getPrediction() {
+            fetch("/predict")
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("prediction").textContent = data.prediction;
+            });
+        }
+    </script>
+</body>
+</html>
