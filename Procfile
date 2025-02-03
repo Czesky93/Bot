@@ -1,5 +1,6 @@
-web: gunicorn web_dashboard:app
-worker: python ai_manager.py
-worker: python bot_settings.py
-worker: python trading_charts.py
-worker: python telegram_ai_bot.py
+web: gunicorn web_portal:app --log-file -
+worker: python3 master_ai_trader.py
+worker: python3 ai_optimizer.py
+worker: python3 pump_dump_detector.py
+worker: python3 news_watcher.py
+worker: python3 telegram_ai_bot.py
