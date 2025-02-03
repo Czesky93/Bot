@@ -1,29 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="pl">
 <head>
-    <title>Ustawienia Bota</title>
+    <meta charset="UTF-8">
+    <title>Konfiguracja Bota</title>
 </head>
 <body>
-    <h1>Konfiguracja Bota</h1>
-    <form id="settings-form">
-        <label>Trading Pair:</label>
-        <input type="text" id="trading_pair" value="{{ config.get('trading_pair', 'BTCUSDT') }}">
-        
-        <label>Kwota Handlu:</label>
-        <input type="number" id="trade_amount" value="{{ config.get('trade_amount', 100) }}">
+    <h1>Konfiguracja RLdC Trading Bot</h1>
 
+    <form id="settings-form">
         <label>Strategia:</label>
         <select id="strategy">
             <option value="MACD">MACD</option>
             <option value="RSI">RSI</option>
+            <option value="Ichimoku">Ichimoku</option>
+            <option value="BollingerBands">Bollinger Bands</option>
             <option value="AI">AI</option>
         </select>
 
+        <label>Kwota handlu:</label>
+        <input type="number" id="trade_amount" value="100">
+
         <label>Stop-Loss (%):</label>
-        <input type="number" id="stop_loss" value="{{ config.get('stop_loss', 2) }}">
+        <input type="number" id="stop_loss" value="2">
 
         <label>Take-Profit (%):</label>
-        <input type="number" id="take_profit" value="{{ config.get('take_profit', 5) }}">
+        <input type="number" id="take_profit" value="5">
 
         <button type="submit">Zapisz</button>
     </form>
@@ -32,9 +33,8 @@
         document.getElementById("settings-form").onsubmit = function(event) {
             event.preventDefault();
             const config = {
-                trading_pair: document.getElementById("trading_pair").value,
-                trade_amount: document.getElementById("trade_amount").value,
                 strategy: document.getElementById("strategy").value,
+                trade_amount: document.getElementById("trade_amount").value,
                 stop_loss: document.getElementById("stop_loss").value,
                 take_profit: document.getElementById("take_profit").value
             };
