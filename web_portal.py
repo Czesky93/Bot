@@ -2,10 +2,11 @@ from flask import Flask, render_template, request, jsonify
 import os
 import json
 
-app = Flask(__name__)
+app = Flask(__name__)  # ✅ Definicja aplikacji Flask przed użyciem dekoratorów!
 
 CONFIG_FILE = "config.json"
 
+# 📌 Funkcja do ładowania konfiguracji
 def load_config():
     if os.path.exists(CONFIG_FILE):
         with open(CONFIG_FILE, "r") as file:
@@ -29,6 +30,20 @@ def settings():
 
     config = load_config()
     return render_template("settings.html", config=config)
+
+# 📌 API do zarządzania Binance
+@app.route("/update_binance", methods=["POST"])
+def update_binance():
+    data = request.json
+    binance_settings = {
+        "api_key": data.get("binance_api_key"),
+        "secret_key": data.get("binance_secret_key"),
+        "mode": data.get("binance_mode"),
+        "leverage": int(data.get("leverage", 10))
+    }
+    with open("binance_config.json", "w") as file:
+        json.dump(binance_settings, file, indent=4)
+    return jsonify({"status": "success", "message": "Ustawienia Binance zapisane!"})
 
 # 📌 API do startowania i zatrzymywania bota
 @app.route("/start_bot", methods=["POST"])
