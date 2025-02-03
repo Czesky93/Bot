@@ -21,7 +21,7 @@ flask-migrate
 torch
 torchvision
 torchaudio
-sklearn
+scikit-learn
 seaborn
 beautifulsoup4
 lxml
