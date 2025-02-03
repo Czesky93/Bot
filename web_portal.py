@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 import os
 import json
+import time
 
 app = Flask(__name__)
 
@@ -13,7 +14,7 @@ def load_config():
             return json.load(file)
     return {}
 
-# 📌 Strona główna (Dashboard)
+# 📌 Strona główna – Dashboard
 @app.route("/")
 def home():
     config = load_config()
@@ -31,16 +32,15 @@ def settings():
     config = load_config()
     return render_template("settings.html", config=config)
 
-# 📌 API do uruchamiania bota
+# 📌 API do startowania i zatrzymywania bota
 @app.route("/start_bot", methods=["POST"])
 def start_bot():
-    os.system("python3 master_ai_trader.py &")  # Uruchomienie bota w tle
+    os.system("python3 master_ai_trader.py &")
     return jsonify({"status": "success", "message": "Bot uruchomiony!"})
 
-# 📌 API do zatrzymywania bota
 @app.route("/stop_bot", methods=["POST"])
 def stop_bot():
-    os.system("pkill -f master_ai_trader.py")  # Zabicie procesu bota
+    os.system("pkill -f master_ai_trader.py")
     return jsonify({"status": "success", "message": "Bot zatrzymany!"})
 
 if __name__ == "__main__":
