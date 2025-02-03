@@ -55,9 +55,7 @@ def get_trading_chart():
     plt.savefig("static/futuristic_trading_chart.png")
     return jsonify({"message": "✅ Wykres zaktualizowany!"})
 
+
 if __name__ == "__main__":
-    
-
-
-port = int(os.environ.get("PORT", 5000))  # Pobiera port z Heroku, domyślnie 5000
-app.run(host="0.0.0.0", port=port)
+    port = int(os.environ.get("PORT", 5000))  # Pobiera port z Heroku, domyślnie 5000
+    app.run(host="0.0.0.0", port=port)
