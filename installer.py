@@ -4,6 +4,7 @@ import json
 import time
 
 CONFIG_FILE = "config.json"
+KODALL_FILE = "KODALL.txt"
 
 # Domyślna konfiguracja
 DEFAULT_CONFIG = {
@@ -51,9 +52,15 @@ def configure_system():
         print("✅ Plik konfiguracji już istnieje.")
 
 def verify_installation():
-    """Sprawdza poprawność działania wszystkich modułów"""
+    """Sprawdza poprawność działania wszystkich modułów zgodnie z KODALL.txt"""
     print("🔍 Weryfikacja instalacji...")
-    modules = ["master_ai_trader.py", "web_portal.py", "ai_optimizer.py", "rldc_quantum_ai.py", "demo_trading.py", "telegram_ai_bot.py", "zordon_ai.py", "ultimate_ai.py"]
+    if not os.path.exists(KODALL_FILE):
+        print("⚠️ Brak pliku KODALL.txt! Instalacja może nie być kompletna.")
+        return
+
+    with open(KODALL_FILE, "r") as f:
+        modules = [line.split("🔹 ")[-1].strip() for line in f.readlines() if "🔹" in line]
+
     for module in modules:
         if not os.path.exists(module):
             print(f"⚠️ Brak pliku {module}! Instalacja mogła się nie powieść.")
@@ -61,13 +68,21 @@ def verify_installation():
             print(f"✅ {module} - OK")
 
 def run_system():
-    """Uruchamia kluczowe moduły systemu"""
+    """Uruchamia kluczowe moduły systemu zgodnie z KODALL.txt"""
     print("🚀 Uruchamianie systemu...")
-    modules = ["master_ai_trader.py", "web_portal.py", "ai_optimizer.py", "rldc_quantum_ai.py", "demo_trading.py", "telegram_ai_bot.py", "zordon_ai.py", "ultimate_ai.py"]
+
+    if not os.path.exists(KODALL_FILE):
+        print("⚠️ Brak KODALL.txt! Nie można uruchomić systemu.")
+        return
+
+    with open(KODALL_FILE, "r") as f:
+        modules = [line.split("🔹 ")[-1].strip() for line in f.readlines() if "🔹" in line]
+
     for module in modules:
-        print(f"▶️ Uruchamianie {module}...")
-        subprocess.Popen(["python", module])
-        time.sleep(2)
+        if os.path.exists(module):
+            print(f"▶️ Uruchamianie {module}...")
+            subprocess.Popen(["python", module])
+            time.sleep(2)
 
 def main():
     """Główna funkcja instalatora"""
