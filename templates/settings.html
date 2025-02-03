@@ -7,83 +7,36 @@
 <body>
     <h1>Zaawansowana Konfiguracja RLdC Trading Bot</h1>
 
-    <h2>🔹 Binance API</h2>
-    <form id="binance-settings">
-        <label>API Key:</label>
-        <input type="text" id="binance_api_key">
-
-        <label>Secret Key:</label>
-        <input type="text" id="binance_secret_key">
-
-        <label>Tryb:</label>
-        <select id="binance_mode">
-            <option value="real">Handel rzeczywisty</option>
-            <option value="test">Tryb testowy</option>
-        </select>
-
-        <label>Dźwignia:</label>
-        <input type="number" id="leverage" value="10">
-
-        <button type="submit">Zapisz Ustawienia Binance</button>
-    </form>
-
-    <h2>📢 Telegram Bot</h2>
-    <form id="telegram-settings">
-        <label>Token Bota:</label>
-        <input type="text" id="telegram_token">
-
-        <label>Tryb:</label>
-        <select id="telegram_mode">
-            <option value="standard">Standard</option>
-            <option value="ai">AI Asystent</option>
-        </select>
-
-        <button type="submit">Zapisz Ustawienia Telegram</button>
-    </form>
-
-    <h2>🧠 Sztuczna Inteligencja</h2>
-    <form id="ai-settings">
-        <label>Wybór AI:</label>
-        <select id="ai_mode">
-            <option value="free">Darmowa AI</option>
-            <option value="paid">Płatna AI</option>
-            <option value="hybrid">Hybrydowa</option>
+    <form id="settings-form">
+        <label>Strategia:</label>
+        <select id="strategy">
+            <option value="MACD">MACD</option>
+            <option value="RSI">RSI</option>
+            <option value="Ichimoku">Ichimoku</option>
+            <option value="BollingerBands">Bollinger Bands</option>
+            <option value="AI">AI</option>
         </select>
 
         <label>Stopień Ryzyka:</label>
         <input type="number" id="risk_level" value="5">
 
-        <button type="submit">Zapisz Ustawienia AI</button>
+        <button type="submit">Zapisz</button>
     </form>
 
     <script>
-        function saveSettings(endpoint, formId) {
-            const formData = {};
-            document.querySelectorAll(`#${formId} input, #${formId} select`).forEach(input => {
-                formData[input.id] = input.value;
-            });
-
-            fetch(endpoint, {
+        document.getElementById("settings-form").onsubmit = function(event) {
+            event.preventDefault();
+            const config = {
+                strategy: document.getElementById("strategy").value,
+                risk_level: document.getElementById("risk_level").value
+            };
+            
+            fetch("/settings", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(config)
             }).then(response => response.json())
               .then(data => alert(data.message));
-        }
-
-        document.getElementById("binance-settings").onsubmit = function(event) {
-            event.preventDefault();
-            saveSettings("/update_binance", "binance-settings");
-        };
-
-        document.getElementById("telegram-settings").onsubmit = function(event) {
-            event.preventDefault();
-            saveSettings("/update_telegram", "telegram-settings");
-        };
-
-        document.getElementById("ai-settings").onsubmit = function(event) {
-            event.preventDefault();
-            saveSettings("/update_ai", "ai-settings");
         };
     </script>
 </body>
