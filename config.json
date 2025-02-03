@@ -1,1 +1,11 @@
-{"binance_api_key": "kxF5kCc5lPjeoiyLsDwpxk8ZYSF3XDLlRHMTgB8LnpcrZi7kDX7Mg8KLGDVBI9Jw", "binance_api_secret": "yN48qIlwjRRsi7GzYDxseAvjT76QNFIN0fzMl7xwlOQrusbI7mHJozPiWxqNGkMo", "TELEGRAM_BOT_TOKEN": "7552903506:AAGCROQG2AX9QspYJoY1llfwlVPBQ6QalSg", "TELEGRAM_CHAT_ID": "6977059745", "trading_pair": "TRUMPUSDT", "trade_amount": "600 USDT", "strategy": "MACD_RSI"}
+{
+    "binance_api_key": "kxF5kCc5lPjeoiyLsDwpxk8ZYSF3XDLlRHMTgB8LnpcrZi7kDX7Mg8KLGDVBI9Jw",
+    "binance_api_secret": "yN48qIlwjRRsi7GzYDxseAvjT76QNFIN0fzMl7xwlOQrusbI7mHJozPiWxqNGkMo",
+    "TELEGRAM_BOT_TOKEN": "7552903506:AAGCROQG2AX9QspYJoY1llfwlVPBQ6QalSg",
+    "TELEGRAM_CHAT_ID": "6977059745",
+    "trading_pair": "TRUMPUSDT",
+    "trade_amount": "600 USDT",
+    "strategy": "MACD_RSI",
+    "stop_loss": 0.02,
+    "take_profit": 0.05
+}
