@@ -3,6 +3,7 @@ import os
 
 CONFIG_FILE = "config.json"
 
+# Domyślna konfiguracja
 DEFAULT_CONFIG = {
     "AI_MODE": "hybrid",  # Opcje: "free", "paid", "hybrid"
     "USE_FREE_AI": True,
@@ -11,13 +12,16 @@ DEFAULT_CONFIG = {
     "STOP_LOSS": 0.02,
     "TAKE_PROFIT": 0.05,
     "TELEGRAM_BOT_TOKEN": "",
-    "CHAT_ID": "",
+    "TELEGRAM_CHAT_ID": "",
     "BINANCE_API_KEY": "",
     "BINANCE_API_SECRET": "",
     "ETHERSCAN_API_KEY": "",
     "ETHEREUM_TRACK_ADDRESS": "",
     "NEWS_API_KEY": "",
-    "OPENAI_API_KEY": ""
+    "OPENAI_API_KEY": "",
+    "trading_pair": "BTCUSDT",
+    "trade_amount": "100 USDT",
+    "strategy": "MACD_RSI"
 }
 
 def load_config():
@@ -25,8 +29,16 @@ def load_config():
     if not os.path.exists(CONFIG_FILE):
         print("🚨 Brak config.json! Tworzę domyślną konfigurację...")
         save_config(DEFAULT_CONFIG)
+
     with open(CONFIG_FILE, "r", encoding="utf-8") as f:
-        return json.load(f)
+        config = json.load(f)
+
+    # Uzupełnianie brakujących kluczy domyślnymi wartościami
+    for key, value in DEFAULT_CONFIG.items():
+        if key not in config:
+            config[key] = value
+
+    return config
 
 def save_config(new_config):
     """Zapisuje konfigurację do pliku."""
