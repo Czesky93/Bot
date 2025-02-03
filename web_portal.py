@@ -3,16 +3,9 @@ import os
 import json
 import time
 import requests
+from config_manager import load_config, save_config
 
 app = Flask(__name__)
-
-CONFIG_FILE = "config.json"
-
-def load_config():
-    if os.path.exists(CONFIG_FILE):
-        with open(CONFIG_FILE, "r") as file:
-            return json.load(file)
-    return {}
 
 @app.route("/")
 def home():
@@ -23,27 +16,46 @@ def home():
 def settings():
     if request.method == "POST":
         new_config = request.json
-        with open(CONFIG_FILE, "w") as file:
-            json.dump(new_config, file, indent=4)
-        return jsonify({"status": "success", "message": "Ustawienia zapisane!"})
-    config = load_config()
-    return render_template("settings.html", config=config)
+        save_config(new_config)
+        return jsonify({"status": "success", "message": "✅ Ustawienia zapisane!"})
+    return jsonify(load_config())
 
 @app.route("/start_bot", methods=["POST"])
 def start_bot():
     os.system("python3 master_ai_trader.py &")
-    return jsonify({"status": "success", "message": "Bot uruchomiony!"})
+    return jsonify({"status": "success", "message": "🚀 Bot uruchomiony!"})
 
 @app.route("/stop_bot", methods=["POST"])
 def stop_bot():
     os.system("pkill -f master_ai_trader.py")
-    return jsonify({"status": "success", "message": "Bot zatrzymany!"})
+    return jsonify({"status": "success", "message": "🛑 Bot zatrzymany!"})
+
+@app.route("/bot_status", methods=["GET"])
+def bot_status():
+    """Sprawdza czy bot działa"""
+    output = os.popen("pgrep -f master_ai_trader.py").read()
+    status = "✅ Bot działa" if output else "❌ Bot nie jest uruchomiony"
+    return jsonify({"status": status})
 
 @app.route("/market_analysis", methods=["GET"])
 def market_analysis():
-    response = requests.get("https://api.binance.com/api/v3/ticker/price")
-    market_data = response.json()
-    return jsonify(market_data)
+    """Pobiera aktualne ceny z Binance"""
+    try:
+        response = requests.get("https://api.binance.com/api/v3/ticker/price")
+        market_data = response.json()
+        return jsonify(market_data)
+    except Exception as e:
+        return jsonify({"error": f"Błąd pobierania danych z Binance: {e}"})
+
+@app.route("/get_logs", methods=["GET"])
+def get_logs():
+    """Pobiera ostatnie logi bota"""
+    try:
+        with open("bot.log", "r") as file:
+            logs = file.readlines()[-10:]  # Pobranie ostatnich 10 linii logów
+        return jsonify({"logs": logs})
+    except FileNotFoundError:
+        return jsonify({"logs": ["Brak logów!"]})
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
