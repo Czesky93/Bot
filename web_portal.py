@@ -40,3 +40,7 @@ def get_trading_data():
         "prices": [43200, 43350, 43100, 43500]
     }
     return jsonify(trading_data)
+
+@app.route("/settings")
+def settings():
+    return render_template("settings.html")
