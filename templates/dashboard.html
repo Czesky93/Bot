@@ -1,13 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="pl">
 <head>
+    <meta charset="UTF-8">
     <title>RLdC Trading Bot - Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <h1>RLdC Trading Bot</h1>
+    <h2>Saldo: <span id="balance">Ładowanie...</span> USDT</h2>
 
-    <h2>Saldo: 1000 USDT</h2>
-    
+    <canvas id="tradingChart"></canvas>
+
     <button onclick="startBot()">Start</button>
     <button onclick="stopBot()">Stop</button>
 
@@ -23,6 +26,28 @@
                 .then(response => response.json())
                 .then(data => alert(data.message));
         }
+
+        function updateChart() {
+            fetch("/get_trading_data")
+                .then(response => response.json())
+                .then(data => {
+                    let ctx = document.getElementById("tradingChart").getContext("2d");
+                    new Chart(ctx, {
+                        type: "line",
+                        data: {
+                            labels: data.timestamps,
+                            datasets: [{
+                                label: "Kurs BTC",
+                                data: data.prices,
+                                borderColor: "green",
+                                fill: false
+                            }]
+                        }
+                    });
+                });
+        }
+
+        setInterval(updateChart, 5000);
     </script>
 </body>
 </html>
