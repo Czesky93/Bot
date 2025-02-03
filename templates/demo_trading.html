@@ -2,48 +2,38 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zaawansowana Strefa Demo Handlu</title>
+    <title>Demo Trading RLdC</title>
 </head>
 <body>
-    <h1>Zaawansowana Strefa Demo Handlu</h1>
-    <label for="start_balance">Początkowa kwota:</label>
-    <input type="number" id="start_balance" value="1000">
-    
-    <h2>Wybierz strategie:</h2>
-    <label><input type="checkbox" id="strategy_1" checked> Strategia RSI</label><br>
-    <label><input type="checkbox" id="strategy_2"> Strategia EMA</label><br>
-    <label><input type="checkbox" id="strategy_3"> Strategia AI RL</label><br>
-    <label><input type="checkbox" id="strategy_4"> Strategia Whale Tracking</label><br>
+    <h1>Demo Trading</h1>
+    <label>Kapitał początkowy:</label>
+    <input type="number" id="demo_balance" value="1000">
 
-    <button onclick="runSimulation()">Uruchom symulację</button>
-    
+    <label>Strategia:</label>
+    <select id="demo_strategy">
+        <option value="MACD">MACD</option>
+        <option value="RSI">RSI</option>
+        <option value="Ichimoku">Ichimoku</option>
+        <option value="AI">AI</option>
+    </select>
+
+    <button onclick="startDemo()">Start Demo</button>
+
     <h2>Wyniki:</h2>
-    <div id="results"></div>
+    <pre id="demo_results"></pre>
 
     <script>
-        function runSimulation() {
-            const strategies = [];
-            if (document.getElementById("strategy_1").checked) strategies.push("RSI");
-            if (document.getElementById("strategy_2").checked) strategies.push("EMA");
-            if (document.getElementById("strategy_3").checked) strategies.push("AI_RL");
-            if (document.getElementById("strategy_4").checked) strategies.push("Whale_Tracking");
-
-            const start_balance = document.getElementById("start_balance").value;
-
-            fetch("/simulate", {
+        function startDemo() {
+            fetch("/start_demo", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ start_balance: parseFloat(start_balance), strategies })
+                body: JSON.stringify({
+                    balance: document.getElementById("demo_balance").value,
+                    strategy: document.getElementById("demo_strategy").value
+                })
             })
             .then(response => response.json())
-            .then(data => {
-                let resultsDiv = document.getElementById("results");
-                resultsDiv.innerHTML = "";
-                data.forEach(result => {
-                    resultsDiv.innerHTML += `<p><b>${result.strategy}:</b> Finalny balans: ${result.final_balance.toFixed(2)} USDT</p>`;
-                });
-            });
+            .then(data => document.getElementById("demo_results").innerText = JSON.stringify(data, null, 2));
         }
     </script>
 </body>
