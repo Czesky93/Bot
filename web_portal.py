@@ -32,6 +32,28 @@ def settings():
     config = load_config()
     return render_template("settings.html", config=config)
 
+@app.route("/bot_status", methods=["GET"])
+def bot_status():
+    """Sprawdza status działania bota i Telegram AI Bota"""
+    running_processes = os.popen("ps aux").read()
+    bot_running = "master_ai_trader.py" in running_processes
+    telegram_running = "telegram_ai_bot.py" in running_processes
+
+    return jsonify({
+        "RLdC_Trading_Bot": "✅ Działa" if bot_running else "❌ Nieaktywny",
+        "Telegram_AI_Bot": "✅ Działa" if telegram_running else "❌ Nieaktywny"
+    })
+
+
+@app.route("/start_telegram_bot", methods=["POST"])
+def start_telegram_bot():
+    """Uruchamia Telegram AI Bota"""
+    try:
+        subprocess.Popen(["python3", "telegram_ai_bot.py"])
+        return jsonify({"status": "success", "message": "📩 Telegram AI Bot uruchomiony!"})
+    except Exception as e:
+        return jsonify({"status": "error", "message": f"❌ Błąd uruchamiania Telegrama: {str(e)}"})
+
 @app.route("/start_bot", methods=["POST"])
 def start_bot():
     try:
