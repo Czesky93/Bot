@@ -1,69 +1,27 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RLdC Trading Bot - Panel WWW</title>
+    <title>RLdC Trading Bot - Dashboard</title>
 </head>
 <body>
-    <h1>RLdC Trading Bot - Panel WWW</h1>
-    <h2>Ustawienia AI i strategii</h2>
-    <label>Tryb AI:</label>
-    <select id="ai_mode">
-        <option value="free">Darmowa</option>
-        <option value="paid">Płatna</option>
-        <option value="hybrid" selected>Hybrydowa</option>
-    </select><br>
+    <h1>RLdC Trading Bot</h1>
+
+    <h2>Saldo: 1000 USDT</h2>
     
-    <label>Stop-Loss:</label>
-    <input type="number" id="stop_loss" value="0.02" step="0.01"><br>
-    
-    <label>Take-Profit:</label>
-    <input type="number" id="take_profit" value="0.05" step="0.01"><br>
-
-    <button onclick="updateConfig()">Zapisz ustawienia</button>
-
-    <h2>Historia Transakcji</h2>
-    <button onclick="getLogs()">Pobierz logi</button>
-    <pre id="logs"></pre>
-
-    <h2>Wykres handlu</h2>
-    <button onclick="updateChart()">Generuj wykres</button><br>
-    <img id="trading_chart" src="" alt="Wykres handlu" width="600px">
+    <button onclick="startBot()">Start</button>
+    <button onclick="stopBot()">Stop</button>
 
     <script>
-        function updateConfig() {
-            const ai_mode = document.getElementById("ai_mode").value;
-            const stop_loss = parseFloat(document.getElementById("stop_loss").value);
-            const take_profit = parseFloat(document.getElementById("take_profit").value);
-
-            fetch("/update_config", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ "AI_MODE": ai_mode, "STOP_LOSS": stop_loss, "TAKE_PROFIT": take_profit })
-            })
-            .then(response => response.json())
-            .then(data => alert(data.message));
+        function startBot() {
+            fetch("/start_bot", { method: "POST" })
+                .then(response => response.json())
+                .then(data => alert(data.message));
         }
 
-        function getLogs() {
-            fetch("/get_logs")
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("logs").textContent = data.logs ? data.logs.join("\n") : "Brak logów!";
-            });
-        }
-
-        function updateChart() {
-            fetch("/plot_trading_chart")
-            .then(response => response.json())
-            .then(data => {
-                if (!data.error) {
-                    document.getElementById("trading_chart").src = "/static/trading_chart.png";
-                } else {
-                    alert(data.error);
-                }
-            });
+        function stopBot() {
+            fetch("/stop_bot", { method: "POST" })
+                .then(response => response.json())
+                .then(data => alert(data.message));
         }
     </script>
 </body>
